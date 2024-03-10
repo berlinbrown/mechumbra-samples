@@ -4,14 +4,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class SimpleInputProcessor implements InputProcessor {
+
+    static float x = 300.0f;
+
+    static float y = 300.0f;
+
     public boolean keyDown (int keycode) {
         switch (keycode) {
             case Input.Keys.LEFT:
-                System.out.println("Running Left");
+                System.out.println("Running Left " + x);
+                x -= 0.8f;
                 break;
             case Input.Keys.RIGHT:
-                System.out.println("Running Right");
-
+                System.out.println("Running Right " + x);
+                x += 0.8f;
                 break;
         }
         return true;
