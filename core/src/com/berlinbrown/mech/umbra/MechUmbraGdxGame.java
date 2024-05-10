@@ -35,7 +35,13 @@ public class MechUmbraGdxGame extends ApplicationAdapter {
 		batch.begin();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(SimpleInputProcessor.x, SimpleInputProcessor.y, 50, 50);
+		//shapeRenderer.rect(SimpleInputProcessor.x, SimpleInputProcessor.y, 50, 50);
+		shapeRenderer.triangle(SimpleInputProcessor.x, SimpleInputProcessor.y,
+				SimpleInputProcessor.x+25,
+				SimpleInputProcessor.y+75,
+				SimpleInputProcessor.x+50,
+				SimpleInputProcessor.y+50);
+
 		shapeRenderer.end();
 		batch.end();
 	}
