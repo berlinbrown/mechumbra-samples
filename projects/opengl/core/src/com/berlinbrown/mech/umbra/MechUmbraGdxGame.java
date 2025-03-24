@@ -20,6 +20,10 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+
+
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -42,6 +46,9 @@ public class MechUmbraGdxGame implements ApplicationListener {
 	protected Label label;
 	protected BitmapFont font;
 
+	protected BitmapFont fontTTF;
+	protected Label labelTTF;
+
 	public Model model2;
 	public ModelInstance instance2;
 
@@ -54,7 +61,6 @@ public class MechUmbraGdxGame implements ApplicationListener {
 
 	public Model zaxis;
 	public ModelInstance zaxisInstance;
-
 	@Override
 	public void create() {
 
@@ -62,6 +68,13 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		font = new BitmapFont();
 		label = new Label(" ", new Label.LabelStyle(font, Color.WHITE));
 		stage.addActor(label);
+
+		// Load TTF
+		fontTTF = createFont("fonts/Roboto-Regular.ttf", 24);
+		labelTTF = new Label(" ", new Label.LabelStyle(fontTTF, Color.WHITE));
+		stage.addActor(labelTTF);
+
+		// Continue to build scene
 
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -150,6 +163,17 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		Gdx.input.setInputProcessor(multiplexer);
 	}
 
+	private BitmapFont createFont(final String fontPath, final int size) {
+			FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontPath));
+			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+			parameter.size = size;  // Set font size
+			parameter.magFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+			parameter.minFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+
+			BitmapFont font = generator.generateFont(parameter);
+			generator.dispose();  // Dispose generator after use
+			return font;
+	}
 
 	@Override
 	public void render() {
@@ -171,7 +195,8 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.setLength(0);
 		stringBuilder.append(" FPS: ").append(Gdx.graphics.getFramesPerSecond());
-		label.setText(stringBuilder);
+		//label.setText(stringBuilder);
+		labelTTF.setText(stringBuilder);
 		stage.draw();
 	}
 
