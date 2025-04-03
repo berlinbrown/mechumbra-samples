@@ -4,4 +4,14 @@ Mech Game Sample Setup Strategy
 
 ## Basic Libgdx Examples
 
-OpenGL - libgdx examples, camera movement, etc
+Show various OpenGL and libgdx examples, camera movement, etc
+
+## Additional Links
+
+https://www.opengl.org/
+
+https://libgdx.com/
+
+https://github.com/BSVogler/WurfelEngineSDK/
+
+https://github.com/BSVogler/Caveland

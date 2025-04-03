@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.berlinbrown.mech.umbra.screens.MainHUDScreen;
 
 /**
  * Load basic system opengl model full with libgdx.
@@ -61,6 +62,9 @@ public class MechUmbraGdxGame implements ApplicationListener {
 
 	public Model zaxis;
 	public ModelInstance zaxisInstance;
+
+	public MainHUDScreen hudScreen;
+
 	@Override
 	public void create() {
 
@@ -70,7 +74,7 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		stage.addActor(label);
 
 		// Load TTF
-		fontTTF = createFont("fonts/Roboto-Regular.ttf", 24);
+		fontTTF = createFont("fonts/Roboto-Regular.ttf", 14);
 		labelTTF = new Label(" ", new Label.LabelStyle(fontTTF, Color.WHITE));
 		stage.addActor(labelTTF);
 
@@ -161,6 +165,9 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		multiplexer.addProcessor(keyboardProcessor);
 
 		Gdx.input.setInputProcessor(multiplexer);
+
+		this.hudScreen = new MainHUDScreen();
+		this.hudScreen.show();
 	}
 
 	private BitmapFont createFont(final String fontPath, final int size) {
@@ -177,6 +184,8 @@ public class MechUmbraGdxGame implements ApplicationListener {
 
 	@Override
 	public void render() {
+		final float delta = Gdx.graphics.getDeltaTime();
+
 		camController.update();
 		//instance.transform.translate(0f, -0.2f, 0f);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -194,21 +203,30 @@ public class MechUmbraGdxGame implements ApplicationListener {
 
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.setLength(0);
-		stringBuilder.append(" FPS: ").append(Gdx.graphics.getFramesPerSecond());
+		stringBuilder.append("FPS: ").append(Gdx.graphics.getFramesPerSecond());
 		//label.setText(stringBuilder);
 		labelTTF.setText(stringBuilder);
 		stage.draw();
+
+		//this.hudScreen.render(delta);
+		Gdx.gl.glDepthMask(false);
+		hudScreen.render(delta);
+		Gdx.gl.glDepthMask(true);
 	}
 
 	@Override
 	public void dispose() {
 		modelBatch.dispose();
 		model.dispose();
+		hudScreen.dispose();
 	}
 
 	@Override
 	public void resize(int width, int height) {
+
 		stage.getViewport().update(width, height, true);
+		// Let the HUD screen adjust to the new size
+		hudScreen.resize(width, height);
 	}
 
 	@Override
@@ -217,5 +235,6 @@ public class MechUmbraGdxGame implements ApplicationListener {
 
 	@Override
 	public void resume() {
+		hudScreen.resume();
 	}
 }
