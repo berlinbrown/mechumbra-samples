@@ -23,12 +23,14 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
-
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.berlinbrown.mech.umbra.screens.MainHUDScreen;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Load basic system opengl model full with libgdx.
@@ -36,34 +38,38 @@ import com.berlinbrown.mech.umbra.screens.MainHUDScreen;
  */
 public class MechUmbraGdxGame implements ApplicationListener {
 
-	public Environment lights;
-	public PerspectiveCamera cam;
-	public ModelBatch modelBatch;
-	public Model model;
-	public ModelInstance instance;
-	public CameraInputController camController;
+	private Environment lights;
+	private PerspectiveCamera cam;
+	private ModelBatch modelBatch;
+	private Model model;
+	private ModelInstance instance;
+	private CameraInputController camController;
 
-	protected Stage stage;
-	protected Label label;
-	protected BitmapFont font;
+	private Stage stage;
+	private Label label;
+	private BitmapFont font;
 
-	protected BitmapFont fontTTF;
-	protected Label labelTTF;
+	private BitmapFont fontTTF;
+	private Label labelTTF;
 
-	public Model model2;
-	public ModelInstance instance2;
+	private Model model2;
+	private ModelInstance instance2;
 
 	// Render grid
-	public Model xaxis;
-	public ModelInstance xaxisInstance;
+	private Model xaxis;
+	private ModelInstance xaxisInstance;
 
-	public Model yaxis;
-	public ModelInstance yaxisInstance;
+	private Model yaxis;
+	private ModelInstance yaxisInstance;
 
-	public Model zaxis;
-	public ModelInstance zaxisInstance;
+	private Model zaxis;
+	private ModelInstance zaxisInstance;
 
-	public MainHUDScreen hudScreen;
+	private MainHUDScreen hudScreen;
+
+	private ModelBatch modelBatchGroup;
+	private Model modelGroup;
+	private List<ModelInstance> boxInstances;
 
 	@Override
 	public void create() {
@@ -163,9 +169,26 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		final InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(camController);
 		multiplexer.addProcessor(keyboardProcessor);
-
 		Gdx.input.setInputProcessor(multiplexer);
 
+		// Create a group of boxes
+		final ModelBuilder modelBuilderGroup = new ModelBuilder();
+		modelGroup = modelBuilder.createBox(2f, 1f, 2f,
+				new Material(ColorAttribute.createDiffuse(Color.YELLOW)),
+				Usage.Position | Usage.Normal);
+
+		// Create 40 boxes along the X and Z axes
+		boxInstances = new ArrayList<>();
+		for (int i = 0; i < 8; i++) {
+			final ModelInstance box = new ModelInstance(modelGroup);
+			//float x = i * 2f;
+			float x = 0;
+			float z = i * 4.2f;
+			box.transform.setToTranslation(x, -8.2f, z);
+			boxInstances.add(box);
+		}
+
+		// Create main hud screen
 		this.hudScreen = new MainHUDScreen();
 		this.hudScreen.show();
 	}
@@ -201,6 +224,13 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		modelBatch.render(zaxisInstance, lights);
 		modelBatch.end();
 
+		// Continue go build group of boxes
+		modelBatch.begin(cam);
+		for (final ModelInstance box : boxInstances) {
+			modelBatch.render(box, lights);
+		}
+		modelBatch.end();
+
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.setLength(0);
 		stringBuilder.append("FPS: ").append(Gdx.graphics.getFramesPerSecond());
@@ -208,7 +238,6 @@ public class MechUmbraGdxGame implements ApplicationListener {
 		labelTTF.setText(stringBuilder);
 		stage.draw();
 
-		//this.hudScreen.render(delta);
 		Gdx.gl.glDepthMask(false);
 		hudScreen.render(delta);
 		Gdx.gl.glDepthMask(true);
@@ -218,6 +247,7 @@ public class MechUmbraGdxGame implements ApplicationListener {
 	public void dispose() {
 		modelBatch.dispose();
 		model.dispose();
+		modelGroup.dispose();
 		hudScreen.dispose();
 	}
 
