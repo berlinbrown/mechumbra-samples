@@ -3,7 +3,11 @@
  */
 package com.berlinbrown.mech.umbra;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -37,8 +41,8 @@ import com.berlinbrown.mech.umbra.screens.PopupExitScreen;
 import com.berlinbrown.mech.umbra.screens.QuitPopupWidget;
 
 /**
- * Load basic system opengl model full with libgdx.
- * Add and support lights, keyvboard input, multiple objects.
+ * Load basic system opengl model full application with libgdx.
+ * Add and support lights, kevboard input, multiple objects.
  */
 public class MechUmbraGdxRPGGame implements ApplicationListener {
 
@@ -225,9 +229,7 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
                 } else if (keycode == 35) {
                     triangleInstance.transform.rotate(new Vector3(0, 1, 0), -10f);
                 } else if (keycode == Input.Keys.ESCAPE) {
-                        if (quitPopup == null) {
-                            showQuitPopup();
-                        }
+                        showQuitPopup();
                         return true;
                 }
                 return true;
@@ -274,9 +276,9 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
             }
         };
         final InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(uiStage);
         multiplexer.addProcessor(camController);
         multiplexer.addProcessor(keyboardProcessor);
-        multiplexer.addProcessor(uiStage);
         Gdx.input.setInputProcessor(multiplexer);
 
         // Create a group of boxes

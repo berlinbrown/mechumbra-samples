@@ -1,3 +1,6 @@
+/**
+ * Berlin Brown - https://www.myberlinaustin.com/ - 2025
+ */
 package com.berlinbrown.mech.umbra.screens;
 
 import com.badlogic.gdx.Gdx;

@@ -1,3 +1,6 @@
+/**
+ * Berlin Brown - https://www.myberlinaustin.com/ - 2025
+ */
 package com.berlinbrown.mech.umbra.screens;
 
 import com.badlogic.gdx.Screen;
@@ -47,8 +50,8 @@ public class MainHUDScreen implements Screen {
         //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear screen
 
         // Position the label in the upper-left corner
-        labelTTF.setPosition(10, Gdx.graphics.getHeight() - 20);
-        labelTTF.setText("[Umbra Home] FPS: " + Gdx.graphics.getFramesPerSecond());
+        labelTTF.setPosition(10, Gdx.graphics.getHeight() - 40);
+        labelTTF.setText("[Umbra Home] FPS: " + Gdx.graphics.getFramesPerSecond()  + "\n -- Game Loaded");
         stage.act(delta);
         stage.draw();
     }

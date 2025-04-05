@@ -1,5 +1,7 @@
 package com.berlinbrown.mech.umbra.screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -12,25 +14,30 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 public class QuitPopupWidget extends Group {
 
     public QuitPopupWidget(final Skin skin) {
-        Table table = new Table(skin);
+        final Table table = new Table(skin);
         table.setBackground(skin.newDrawable("white", new Color(1, 1, 1, 0.95f)));
         table.pad(20);
         table.defaults().pad(10);
 
-        Label title = new Label("Quit Game?", skin);
+        // First row as title
+        final Label title = new Label("Quit Game?", skin);
         table.add(title).colspan(2).center().row();
 
-        TextButton quit1 = new TextButton("Quit", skin);
+        final TextButton quit1 = new TextButton("Continue", skin);
         quit1.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Quit");
+                System.out.println("Continue");
+
+                // Remove popup
+                remove();
             }
         });
 
-        TextButton quit2 = new TextButton("Quit", skin);
+        final TextButton quit2 = new TextButton("Quit", skin);
         quit2.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Quit");
+                Gdx.app.exit();
             }
         });
 
@@ -47,24 +54,36 @@ public class QuitPopupWidget extends Group {
     }
 
     public static Skin createBasicSkin() {
-        Skin skin = new Skin();
-        BitmapFont font = new BitmapFont();
+        final Skin skin = new Skin();
+        final BitmapFont font = createFont("fonts/Roboto-Regular.ttf", 14);
         skin.add("default", font);
 
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        final Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
         skin.add("white", new Texture(pixmap));
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
+        final Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
         skin.add("default", labelStyle);
 
-        TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
+        final TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
         tbs.up = skin.newDrawable("white", Color.LIGHT_GRAY);
         tbs.down = skin.newDrawable("white", Color.DARK_GRAY);
         tbs.font = font;
         skin.add("default", tbs);
 
         return skin;
+    }
+
+    private static BitmapFont createFont(final String fontPath, final int size) {
+        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontPath));
+        final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = size;  // Set font size
+        parameter.magFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+        parameter.minFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+
+        final BitmapFont font = generator.generateFont(parameter);
+        generator.dispose();  // Dispose generator after use
+        return font;
     }
 }
