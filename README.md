@@ -12,7 +12,9 @@ LibGDX is an open-source, cross-platform game development framework that lets yo
 
 ## Example Scene Screenshots
 
-![Alt text](public/imgs/basic-scene1.png)
+![Basic Open GL Scene 1](public/imgs/basic-scene1.png)
+
+![Basic Open GL Scene 2](media/Screenshot_1.png)
 
 ## Additional Links
 
