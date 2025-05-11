@@ -1,29 +1,32 @@
 package com.berlinbrown.mech.umbra.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class QuitPopupWidget extends Group {
+public class EnableFightPopupWidget extends Group {
 
-    public QuitPopupWidget(final Skin skin) {
+    public EnableFightPopupWidget(final Skin skin) {
         final Table table = new Table(skin);
         table.setBackground(skin.newDrawable("white", new Color(1, 1, 1, 0.95f)));
         table.pad(20);
         table.defaults().pad(10);
 
         // First row as title
-        final Label title = new Label("Quit Game?", skin);
+        final Label title = new Label("Fight?", skin);
         table.add(title).colspan(2).center().row();
 
-        final TextButton quit1 = new TextButton("Continue!", skin);
+        final TextButton quit1 = new TextButton("Fight", skin);
         quit1.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Continue");
@@ -33,11 +36,10 @@ public class QuitPopupWidget extends Group {
             }
         });
 
-        final TextButton quit2 = new TextButton("Quit", skin);
+        final TextButton quit2 = new TextButton("Exit", skin);
         quit2.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Quit");
-                Gdx.app.exit();
+                System.out.println("Exit");
             }
         });
 
@@ -79,8 +81,8 @@ public class QuitPopupWidget extends Group {
         final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontPath));
         final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = size;  // Set font size
-        parameter.magFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
-        parameter.minFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+        parameter.magFilter = Texture.TextureFilter.Linear;
+        parameter.minFilter = Texture.TextureFilter.Linear;
 
         final BitmapFont font = generator.generateFont(parameter);
         generator.dispose();  // Dispose generator after use

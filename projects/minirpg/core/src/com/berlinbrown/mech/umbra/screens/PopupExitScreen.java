@@ -45,14 +45,14 @@ public class PopupExitScreen implements Screen {
         title.setAlignment(Align.center);
         root.add(title).colspan(2).center().row();
 
-        TextButton quit1 = new TextButton("Quit", skin);
+        TextButton quit1 = new TextButton("Quit!", skin);
         quit1.addListener(new ClickListener() {
             public void clicked(final InputEvent event, final float x, final float y) {
                 System.out.println("Quit Clicked");
             }
         });
 
-        final TextButton quit2 = new TextButton("Quit", skin);
+        final TextButton quit2 = new TextButton("Quit!", skin);
         quit2.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Quit Clicked");

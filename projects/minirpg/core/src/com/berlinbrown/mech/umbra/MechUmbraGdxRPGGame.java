@@ -31,13 +31,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.berlinbrown.mech.umbra.screens.EnableFightPopupWidget;
 import com.berlinbrown.mech.umbra.screens.MainHUDScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector3;
-import com.berlinbrown.mech.umbra.screens.PopupExitScreen;
 import com.berlinbrown.mech.umbra.screens.QuitPopupWidget;
 
 /**
@@ -50,7 +50,10 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
     private PerspectiveCamera cam;
     private ModelBatch modelBatch;
     private Model model;
-    private Model triangleModel;
+
+    private Model triangleModelPlayerOne;
+    private Model triangleModelPlayerTwo;
+
     private ModelInstance instance;
     private CameraInputController camController;
 
@@ -79,16 +82,22 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
     private ModelBatch modelBatchGroup;
     private Model modelGroup;
     private List<ModelInstance> boxInstances;
-    private ModelInstance triangleInstance;
+    private ModelInstance triangleInstancePlayerOne;
+
+    private ModelInstance triangleInstancePlayerTwo;
 
     private Model cubeModel;
     private ModelInstance cubeRotateInstance;
 
     private Stage uiStage;
     private QuitPopupWidget quitPopup;
+    private EnableFightPopupWidget fightWidget;
 
     private float angle = 0f;
 
+    /**
+     * Create various objects
+     */
     @Override
     public void create() {
 
@@ -164,47 +173,84 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
         // Initial offset cube
         cubeRotateInstance.transform.setToTranslation(8f, 0f, 0f); // 5 units off Y-axis
 
-        // Create model triangle player prism
+        // Create model triangle player prism  (PLAYER1)
+        {
+            // Create a 3D Triangular Pyramid (Tetrahedron)
+            // Begin a new model definition.
+            modelBuilder.begin();
+            // Create a part with triangle primitive type.
+            final MeshPartBuilder meshBuilder = modelBuilder.part("prism", GL20.GL_TRIANGLES,
+                    Usage.Position | Usage.Normal,
+                    new Material(ColorAttribute.createDiffuse(Color.ORANGE)));
 
-        // Create a 3D Triangular Pyramid (Tetrahedron)
-        // Begin a new model definition.
-        modelBuilder.begin();
-        // Create a part with triangle primitive type.
-        final MeshPartBuilder meshBuilder = modelBuilder.part("prism", GL20.GL_TRIANGLES,
-                Usage.Position | Usage.Normal,
-                new Material(ColorAttribute.createDiffuse(Color.ORANGE)));
+            // Define bottom triangle vertices (y = 0)
+            final Vector3 b0 = new Vector3(-1f, 0f, -1f);
+            final Vector3 b1 = new Vector3(1f, 0f, -1f);
+            final Vector3 b2 = new Vector3(0f, 0f, 1f);
 
-        // Define bottom triangle vertices (y = 0)
-        Vector3 b0 = new Vector3(-1f, 0f, -1f);
-        Vector3 b1 = new Vector3(1f, 0f, -1f);
-        Vector3 b2 = new Vector3(0f, 0f, 1f);
+            // Define top triangle vertices (y = 1)
+            final Vector3 t0 = new Vector3(-1f, 1f, -1f);
+            final Vector3 t1 = new Vector3(1f, 1f, -1f);
+            final Vector3 t2 = new Vector3(0f, 1f, 1f);
 
-        // Define top triangle vertices (y = 1)
-        Vector3 t0 = new Vector3(-1f, 1f, -1f);
-        Vector3 t1 = new Vector3(1f, 1f, -1f);
-        Vector3 t2 = new Vector3(0f, 1f, 1f);
+            // Create the bottom face (assuming counterclockwise winding for the front face)
+            meshBuilder.triangle(b0, b1, b2);
 
-        // Create the bottom face (assuming counterclockwise winding for the front face)
-        meshBuilder.triangle(b0, b1, b2);
+            // Create the top face with reversed order so its normal faces upward
+            meshBuilder.triangle(t2, t1, t0);
 
-        // Create the top face with reversed order so its normal faces upward
-        meshBuilder.triangle(t2, t1, t0);
+            // Side face 1: connects edge from b0 to b1 with corresponding top edge (t0 to t1)
+            meshBuilder.triangle(b0, t0, t1);
+            meshBuilder.triangle(b0, t1, b1);
 
-        // Side face 1: connects edge from b0 to b1 with corresponding top edge (t0 to t1)
-        meshBuilder.triangle(b0, t0, t1);
-        meshBuilder.triangle(b0, t1, b1);
+            // Side face 2: connects edge from b1 to b2 with corresponding top edge (t1 to t2)
+            meshBuilder.triangle(b1, t1, t2);
+            meshBuilder.triangle(b1, t2, b2);
 
-        // Side face 2: connects edge from b1 to b2 with corresponding top edge (t1 to t2)
-        meshBuilder.triangle(b1, t1, t2);
-        meshBuilder.triangle(b1, t2, b2);
+            // Side face 3: connects edge from b2 to b0 with corresponding top edge (t2 to t0)
+            meshBuilder.triangle(b2, t2, t0);
+            meshBuilder.triangle(b2, t0, b0);
+            // Complete the model definition
+            triangleModelPlayerOne = modelBuilder.end();
+            triangleInstancePlayerOne = new ModelInstance(triangleModelPlayerOne);
+            triangleInstancePlayerOne.transform.setToTranslation(0f, -3.6f, 0f);
+            // End of render playerone
+        }
 
-        // Side face 3: connects edge from b2 to b0 with corresponding top edge (t2 to t0)
-        meshBuilder.triangle(b2, t2, t0);
-        meshBuilder.triangle(b2, t0, b0);
-        // Complete the model definition
-        triangleModel = modelBuilder.end();
-        triangleInstance = new ModelInstance(triangleModel);
-        triangleInstance.transform.setToTranslation(0f, -3.6f, 0f);
+        // Add Player two
+        {
+            // Create a 3D Triangular Pyramid (Tetrahedron)
+            // Begin a new model definition.
+            modelBuilder.begin();
+            // Create a part with triangle primitive type.
+            final MeshPartBuilder meshBuilderTwo = modelBuilder.part("prism", GL20.GL_TRIANGLES,
+                    Usage.Position | Usage.Normal,
+                    new Material(ColorAttribute.createDiffuse(Color.CORAL)));
+
+            final Vector3 b0two = new Vector3(-1f, 0f, -1f);
+            final Vector3 b1two = new Vector3(1f, 0f, -1f);
+            final Vector3 b2two = new Vector3(0f, 0f, 1f);
+
+            final Vector3 t0two = new Vector3(-1f, 1f, -1f);
+            final Vector3 t1two = new Vector3(1f, 1f, -1f);
+            final Vector3 t2two = new Vector3(0f, 1f, 1f);
+
+            meshBuilderTwo.triangle(b0two, b1two, b2two);
+            meshBuilderTwo.triangle(t2two, t1two, t0two);
+            meshBuilderTwo.triangle(b0two, t0two, t1two);
+            meshBuilderTwo.triangle(b0two, t1two, b1two);
+            meshBuilderTwo.triangle(b1two, t1two, t2two);
+            meshBuilderTwo.triangle(b1two, t2two, b2two);
+            meshBuilderTwo.triangle(b2two, t2two, t0two);
+            meshBuilderTwo.triangle(b2two, t0two, b0two);
+
+            // Complete the model definition(player two)
+            triangleModelPlayerTwo = modelBuilder.end();
+            triangleInstancePlayerTwo = new ModelInstance(triangleModelPlayerTwo);
+            triangleInstancePlayerTwo.transform.setToTranslation(0f, -3.6f, 4.0f);
+            triangleInstancePlayerTwo.transform.rotate(0.0f, 1, 0.0f, 180.0f);
+
+        }
 
         // Stage
         uiStage = new Stage(new ScreenViewport());
@@ -220,14 +266,17 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
                 if (keycode == 46) {
                     System.out.println("Key Pressed: (R)");
                     //instance2.transform.translate(0f, 0f, 0.1f);
-                    triangleInstance.transform.translate(0f, 0f, 0.1f);
+                    triangleInstancePlayerOne.transform.translate(0f, 0f, 0.1f);
                 } else if (keycode == 34) {
                     System.out.println("Key Pressed: (F)");
-                    triangleInstance.transform.translate(0f, 0f, -0.1f);
-                } else if (keycode == 48) {
-                    triangleInstance.transform.rotate(new Vector3(0, 1, 0), 10f);
+                    triangleInstancePlayerOne.transform.translate(0f, 0f, -0.1f);
                 } else if (keycode == 35) {
-                    triangleInstance.transform.rotate(new Vector3(0, 1, 0), -10f);
+                    System.out.println("Key Pressed: (G)");
+                    showFightWidgetPopup();
+                } else if (keycode == 48) {
+                    triangleInstancePlayerOne.transform.rotate(new Vector3(0, 1, 0), 10f);
+                } else if (keycode == 35) {
+                    triangleInstancePlayerOne.transform.rotate(new Vector3(0, 1, 0), -10f);
                 } else if (keycode == Input.Keys.ESCAPE) {
                         showQuitPopup();
                         return true;
@@ -312,16 +361,23 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
         this.hudScreen.show();
     }
 
-
     private void showQuitPopup() {
         quitPopup = new QuitPopupWidget(QuitPopupWidget.createBasicSkin());
-
         quitPopup.setPosition(
                 (Gdx.graphics.getWidth() - quitPopup.getWidth()) / 2f,
                 (Gdx.graphics.getHeight() - quitPopup.getHeight()) / 2f
         );
 
         uiStage.addActor(quitPopup);
+    }
+
+    private void showFightWidgetPopup() {
+        fightWidget = new EnableFightPopupWidget(EnableFightPopupWidget.createBasicSkin());
+        fightWidget.setPosition(
+                (Gdx.graphics.getWidth() - fightWidget.getWidth()) / 2f,
+                (Gdx.graphics.getHeight() - fightWidget.getHeight()) / 2f
+        );
+        uiStage.addActor(fightWidget);
     }
 
     private BitmapFont createFont(final String fontPath, final int size) {
@@ -360,8 +416,11 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
             modelBatch.render(box, lightsEnvironment);
         }
 
-        // Also render triangle instance
-        modelBatch.render(triangleInstance, lightsEnvironment);
+        // Also render triangle instance (Player one)
+        modelBatch.render(triangleInstancePlayerOne, lightsEnvironment);
+
+        // Render player two
+        modelBatch.render(triangleInstancePlayerTwo, lightsEnvironment);
 
         // Rotating cube
         // Create orbiting transformation

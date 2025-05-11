@@ -51,7 +51,7 @@ public class MainHUDScreen implements Screen {
 
         // Position the label in the upper-left corner
         labelTTF.setPosition(10, Gdx.graphics.getHeight() - 40);
-        labelTTF.setText("[Umbra Home] FPS: " + Gdx.graphics.getFramesPerSecond()  + "\n -- Game Loaded");
+        labelTTF.setText("[Umbra Home] FPS: " + Gdx.graphics.getFramesPerSecond()  + "\n -- Game Loaded \n -- Combat Stats >>");
         stage.act(delta);
         stage.draw();
     }
