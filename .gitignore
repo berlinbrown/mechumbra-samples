@@ -1,5 +1,9 @@
 ## Java
 
+target
+
+*.jar
+
 *.class
 *.war
 *.ear

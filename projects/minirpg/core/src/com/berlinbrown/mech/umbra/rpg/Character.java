@@ -1,14 +1,14 @@
-package com.berlin.austin.rpg;
+package com.berlinbrown.mech.umbra.rpg;
 
 public class Character {
 
-    String name;
-    int strength;
-    int constitution;
-    int dexterity;
-    int defense;
-    int attackDamage;
-    int healthPoints;
+    public String name;
+    public int strength;
+    public int constitution;
+    public int dexterity;
+    public int defense;
+    public int attackDamage;
+    public int healthPoints;
 
     public Character(final String name) {
         this.name = name;

@@ -40,6 +40,8 @@ import java.util.List;
 import com.badlogic.gdx.math.Vector3;
 import com.berlinbrown.mech.umbra.screens.QuitPopupWidget;
 
+import com.berlinbrown.mech.umbra.rpg.Character;
+
 /**
  * Load basic system opengl model full application with libgdx.
  * Add and support lights, kevboard input, multiple objects.
@@ -95,12 +97,33 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
 
     private float angle = 0f;
 
+    public static final Character hero = new Character("Hero Player");
+    public static final Character enemy = new Character("Goblin Enemy");
+
     /**
      * Create various objects
      */
     @Override
     public void create() {
 
+        // Setup characters
+        // Setup stats
+        hero.strength = 30;
+        hero.constitution = 20;
+        hero.dexterity = 15;
+        hero.defense = 30;
+        hero.attackDamage = 40;
+        hero.healthPoints = 100;
+
+        // Setup enemy character stats
+        enemy.strength = 30;
+        enemy.constitution = 20;
+        enemy.dexterity = 15;
+        enemy.defense = 30;
+        enemy.attackDamage = 40;
+        enemy.healthPoints = 120;
+
+        // Setup UI components
         stage = new Stage();
         font = new BitmapFont();
         label = new Label(" ", new Label.LabelStyle(font, Color.WHITE));
