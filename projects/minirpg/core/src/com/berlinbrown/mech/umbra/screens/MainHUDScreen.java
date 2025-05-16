@@ -59,7 +59,8 @@ public class MainHUDScreen implements Screen {
         labelTTF.setPosition(10, Gdx.graphics.getHeight() - 40);
 
         final StringBuilder buf = new StringBuilder();
-        buf.append("[Umbra Home] FPS: " + Gdx.graphics.getFramesPerSecond() + " -- " + delta);
+        buf.append("[Umbra Home] FPS: " + Gdx.graphics.getFramesPerSecond() + MechUmbraGdxRPGGame.timeElapsed + " -- "
+                + MechUmbraGdxRPGGame.counter + " -- " + MechUmbraGdxRPGGame.lastMessage);
         buf.append("\n");
         //buf.append("1 ----- Player Status : \n");
 

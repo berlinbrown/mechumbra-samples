@@ -100,6 +100,13 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
     public static final Character hero = new Character("Hero Player");
     public static final Character enemy = new Character("Goblin Enemy");
 
+    public static float timeElapsed = 0f;
+
+    public static int counter = 0;
+
+    public static String lastMessage = "";
+    public static boolean onOffMsg = false;
+
     /**
      * Create various objects
      */
@@ -415,10 +422,43 @@ public class MechUmbraGdxRPGGame implements ApplicationListener {
         return font;
     }
 
+    public void gameTick() {
+        if (hero.isAlive() && enemy.isAlive()) {
+            System.out.println("\nWhat do you want to do? (1) Attack (2) Run");
+            hero.attack(enemy);
+
+            if (enemy.isAlive()) {
+                enemy.attack(hero);
+            } else {
+                System.out.println("The Goblin is defeated!");
+            }
+            if (!hero.isAlive()) {
+                System.out.println("You have been defeated...");
+            }
+
+            onOffMsg = !onOffMsg;
+
+            if (onOffMsg) {
+                lastMessage = "Attack attack !!! ";
+            } else {
+                lastMessage = "";
+            }
+        }
+    }
+
     @Override
     public void render() {
         final float delta = Gdx.graphics.getDeltaTime();
         angle += delta * 10f;
+        timeElapsed += delta;
+
+        if (timeElapsed >= 1f) {
+            System.out.println("1 second has passed!");
+            timeElapsed = 0f;
+            counter++;
+
+            gameTick();
+        }
 
         camController.update();
         //instance.transform.translate(0f, -0.2f, 0f);
