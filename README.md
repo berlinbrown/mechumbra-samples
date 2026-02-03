@@ -1,27 +1,68 @@
 # mechumbra-samples
 
-Mech Game Sample Setup Strategy
+Mech Game Sample Setup Strategy — a small collection of libGDX samples demonstrating OpenGL, camera control, Scene2D UI and simple gameplay loops.
 
-## Basic Libgdx Examples
+## Quickstart
 
-Show various OpenGL and libgdx examples, camera movement, etc
+- Build the entire repo (from repo root):
 
-## On Libgdx
+```bash
+./gradlew build
+```
 
-LibGDX is an open-source, cross-platform game development framework that lets you write your game once in Java and deploy it across desktop, Android, iOS, and web platforms.  It has components for graphics, audio, input, and physics, LibGDX gives you everything you need to build a complete game.
+- Run a sample (recommended: `minirpg`):
+  - cd into the sample folder and use the sample Gradle wrapper:
 
-## Example Scene Screenshots
+```bash
+cd projects/minirpg
+./gradlew run       # runs the desktop app (uses project assets folder)
+```
 
-![Basic Open GL Scene 1](public/imgs/basic-scene1.png)
+  - Alternatively, from the sample folder you can run the example tasks directly:
 
-![Basic Open GL Scene 2](media/Screenshot_1.png)
+```bash
+./gradlew :desktop:run   # run desktop module
+./gradlew :desktop:debug # run with debug flag
+./gradlew :desktop:dist  # create a runnable fat-jar
+```
 
-## Additional Links
+- Desktop apps rely on the `assets/` folder as their working directory — ensure the app's workingDir points to the correct `assets` folder (see `projects/minirpg/desktop/build.gradle`).
 
-https://www.opengl.org/
+## Key files to inspect
 
-https://libgdx.com/
+- `desktop/src/.../DesktopLauncher.java` — desktop entry point; macOS requires the JVM arg `-XstartOnFirstThread` for LWJGL3 applications.
+- `core/src/.../MechUmbraGdxGame.java` — simple 2D app example (ApplicationAdapter).
+- `projects/minirpg/core/src/.../MechUmbraGdxRPGGame.java` — full example with 3D models, camera controller, input multiplexer and Scene2D UI.
+- `projects/minirpg/core/src/.../screens/*` — HUD and popup widgets (`MainHUDScreen`, `EnableFightPopupWidget`, `QuitPopupWidget`).
+- `projects/minirpg/core/src/.../rpg/Character.java` — small RPG character model and combat helpers.
+- `build.gradle` (root) — central versions (e.g., `gdxVersion = '1.12.1'`).
 
-https://github.com/BSVogler/WurfelEngineSDK/
+## Project conventions & patterns
 
-https://github.com/BSVogler/Caveland
+- Procedural geometry is created with `ModelBuilder` / `MeshPartBuilder` (see `MechUmbraGdxRPGGame` triangular pyramid example).
+- Input handling commonly uses `InputMultiplexer` to combine `Stage`, `CameraInputController`, and custom `InputProcessor` implementations.
+- UI / HUD use Scene2D with `Stage` + `ScreenViewport`. Fonts are loaded via `FreeTypeFontGenerator` from `assets/fonts/Roboto-Regular.ttf`.
+- Simple logging uses `System.out.println` across the samples — expect console-based debugging output.
+
+## Assets
+
+- The project contains a top-level `assets/` folder for the root sample and per-sample `assets/` directories (e.g., `projects/minirpg/assets/`).
+- Ensure runtime working directory points to the intended `assets` folder when running from Gradle or the IDE; many runtime issues come from missing assets.
+
+## Building & Release
+
+- Sample desktop modules provide a `dist` task that builds a runnable jar (fat jar) by bundling runtime dependencies (`projects/*/desktop/build.gradle`).
+
+## Tests & CI
+
+- Automated tests are minimal; most validation is manual visual verification and console traces.
+- There are currently no `.github/workflows` — consider adding a simple `build` workflow to run `./gradlew build` on PRs.
+
+## Helpful notes & gotchas
+
+- macOS: add `-XstartOnFirstThread` to JVM args when running LWJGL3 desktop apps (this repo's sample `desktop` Gradle tasks add it automatically on macOS).
+- Use the sample's Gradle wrapper (`projects/<sample>/gradlew`) when working inside that sample to avoid version mismatches.
+
+---
+
+If anything should be expanded (e.g., a contributor checklist, sample PR flow, or CI example), tell me which section to add and I will iterate.
