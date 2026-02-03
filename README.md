@@ -63,6 +63,3 @@ cd projects/minirpg
 - macOS: add `-XstartOnFirstThread` to JVM args when running LWJGL3 desktop apps (this repo's sample `desktop` Gradle tasks add it automatically on macOS).
 - Use the sample's Gradle wrapper (`projects/<sample>/gradlew`) when working inside that sample to avoid version mismatches.
 
----
-
-If anything should be expanded (e.g., a contributor checklist, sample PR flow, or CI example), tell me which section to add and I will iterate.
